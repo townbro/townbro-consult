@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>동네Bro 상담 양식</title>
+<title>동네Bro 상담 요청</title>
 <meta name="theme-color" content="#4a8262">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -16,7 +16,10 @@
   button { font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
   input, textarea, select { font-family:inherit; }
 
-  .wrap { max-width:680px; margin:0 auto; padding:20px 16px 100px; }
+  .wrap { max-width:680px; margin:0 auto; padding:20px 16px 110px; }
+  .wide { max-width:980px; }
+
+  /* 헤더 카드 */
   .head-card {
     background:#fff; border-radius:18px; padding:22px 20px;
     box-shadow:0 4px 14px rgba(0,0,0,0.04);
@@ -31,14 +34,15 @@
   }
   .brand-row .brand-name { font-size:14px; font-weight:800; color:#4a8262; letter-spacing:-0.3px; }
   .brand-row .brand-sub { font-size:11px; color:#8d8472; }
-  .greet { font-size:18px; font-weight:800; color:#2c2820; letter-spacing:-0.4px; margin-top:8px; }
+  .greet { font-size:19px; font-weight:800; color:#2c2820; letter-spacing:-0.4px; margin-top:8px; }
   .greet b { color:#4a8262; }
-  .intro { font-size:13px; color:#6b6450; margin-top:6px; line-height:1.55; }
+  .intro { font-size:13.5px; color:#6b6450; margin-top:8px; line-height:1.6; }
   .progress-wrap { margin-top:14px; }
   .progress-bar { background:#f0eadb; height:8px; border-radius:999px; overflow:hidden; }
   .progress-fill { background:linear-gradient(90deg,#4a8262,#5a9b75); height:100%; width:0%; transition:width 0.4s; border-radius:999px; }
-  .progress-text { font-size:11px; color:#8d8472; font-weight:700; margin-top:4px; text-align:right; }
+  .progress-text { font-size:11.5px; color:#8d8472; font-weight:700; margin-top:4px; text-align:right; }
 
+  /* 섹션 */
   .section {
     background:#fff; border-radius:14px; padding:0; overflow:hidden;
     border:1px solid #ece5d6; margin-bottom:12px;
@@ -46,15 +50,19 @@
   .section-head {
     background:#faf0e0; padding:12px 16px;
     display:flex; justify-content:space-between; align-items:center;
-    border-bottom:1px solid #ece5d6;
+    border-bottom:1px solid #ece5d6; cursor:default;
   }
   .section-head .ttl { font-size:14.5px; font-weight:800; color:#2c2820; }
-  .section-head .badge { font-size:10.5px; background:rgba(74,130,98,0.12); color:#4a8262; padding:3px 8px; border-radius:999px; font-weight:700; }
+  .section-head.collapsible { cursor:pointer; }
+  .section-head.collapsible .ttl::after { content:' ▾'; font-size:11px; color:#a39c8a; }
+  .section-head.collapsible.closed .ttl::after { content:' ▸'; }
   .section-body { padding:14px 16px; }
 
-  .fld { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+  /* 필드 */
+  .fld { display:flex; flex-direction:column; gap:5px; margin-bottom:13px; }
   .fld:last-child { margin-bottom:0; }
   .fld .lbl { font-size:12.5px; font-weight:700; color:#5a4f3a; }
+  .fld .lbl .req { color:#c84a3a; }
   .fld input, .fld textarea, .fld select {
     width:100%; border:1.5px solid #e8dfd0; border-radius:10px;
     padding:11px 13px; font-size:14.5px; background:#fdfaf3;
@@ -63,12 +71,11 @@
     outline:2px solid #4a8262; border-color:transparent; background:#fff;
   }
   .fld textarea { min-height:90px; resize:vertical; line-height:1.55; }
-  .fld .helper { font-size:11px; color:#a39c8a; }
+  .fld .helper { font-size:11.5px; color:#a39c8a; }
+  .fld-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 
-  .chip-group {
-    display:flex; flex-wrap:wrap; gap:6px; align-items:center;
-    margin-top:4px;
-  }
+  /* 칩 */
+  .chip-group { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:4px; }
   .chip {
     display:inline-flex; align-items:center; gap:5px;
     padding:9px 13px; border:1.5px solid #d8cdb8;
@@ -98,25 +105,22 @@
     background:#fdfaf3; border-radius:10px; padding:12px;
     margin-bottom:10px; border:1px solid #f0eadb;
   }
-  .room-row:last-child { margin-bottom:0; }
   .room-row .room-name {
     font-size:13.5px; font-weight:800; color:#4a8262;
     margin-bottom:8px; display:flex; align-items:center; gap:6px;
   }
-  .room-row .room-name .pin { font-size:14px; }
   .room-row textarea {
     width:100%; border:1.5px solid #e8dfd0; border-radius:8px;
     padding:9px 11px; font-size:13.5px; background:#fff;
-    min-height:60px; resize:vertical; line-height:1.55;
+    min-height:50px; resize:vertical; line-height:1.55;
   }
   .room-row textarea:focus { outline:2px solid #4a8262; border-color:transparent; }
   .room-row .row2 { display:flex; gap:6px; margin-top:6px; }
-  .room-row .row2 textarea { min-height:36px; }
 
-  /* 저장 바 — sticky bottom */
+  /* 저장 바 */
   .save-bar {
     position:fixed; bottom:0; left:0; right:0;
-    background:rgba(255,255,255,0.96);
+    background:rgba(255,255,255,0.97);
     backdrop-filter:blur(10px);
     -webkit-backdrop-filter:blur(10px);
     border-top:1px solid #e8dfd0;
@@ -126,21 +130,26 @@
   }
   .save-bar .auto-stat { flex:1; font-size:11.5px; color:#6b6450; font-weight:600; }
   .save-bar .auto-stat.saved { color:#4a8262; }
-  .btn-save {
+  .btn-primary {
     background:linear-gradient(135deg,#4a8262,#3d6e52);
     color:#fff; padding:13px 22px; border-radius:12px;
     font-size:14px; font-weight:800;
     box-shadow:0 4px 12px rgba(74,130,98,0.22);
     min-width:140px;
   }
-  .btn-save:disabled { opacity:0.6; }
+  .btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
   .btn-secondary {
     background:#f3ede2; color:#6b6450;
     padding:11px 16px; border-radius:10px;
     font-size:13px; font-weight:700;
   }
+  .btn-danger {
+    background:#fdecec; color:#c84a3a;
+    padding:11px 16px; border-radius:10px;
+    font-size:13px; font-weight:700;
+  }
 
-  /* 로딩 / 에러 화면 */
+  /* 로딩/에러/완료 */
   .center-screen {
     min-height:100vh; display:flex; flex-direction:column;
     align-items:center; justify-content:center; padding:24px;
@@ -154,25 +163,21 @@
   @keyframes spin { to { transform:rotate(360deg); } }
   .err-emoji { font-size:48px; }
   .err-title { font-size:18px; font-weight:800; color:#2c2820; }
-  .err-msg { font-size:13.5px; color:#6b6450; max-width:320px; line-height:1.55; }
+  .err-msg { font-size:13.5px; color:#6b6450; max-width:340px; line-height:1.55; }
 
-  /* 완료 화면 */
   .done-screen {
     min-height:100vh; display:flex; flex-direction:column;
     align-items:center; justify-content:center;
     padding:24px; gap:14px; text-align:center;
     background:linear-gradient(180deg,#f7f3ec 0%,#e8f0ea 100%);
   }
-  .done-emoji {
-    font-size:72px;
-    animation:bounce 1.2s ease-in-out infinite;
-  }
+  .done-emoji { font-size:72px; animation:bounce 1.2s ease-in-out infinite; }
   @keyframes bounce {
     0%,100% { transform:translateY(0); }
     50% { transform:translateY(-12px); }
   }
   .done-title { font-size:22px; font-weight:800; color:#4a8262; }
-  .done-msg { font-size:14px; color:#6b6450; max-width:340px; line-height:1.6; }
+  .done-msg { font-size:14px; color:#6b6450; max-width:360px; line-height:1.6; }
 
   /* 토스트 */
   .toast {
@@ -187,7 +192,7 @@
   .toast.show { opacity:1; }
   .toast.err { background:#c33; }
 
-  /* 관리자 모드 표시 */
+  /* 관리자 모드 */
   .admin-badge {
     position:fixed; top:10px; right:10px;
     background:linear-gradient(135deg,#d8a72a,#c8961e);
@@ -195,25 +200,86 @@
     font-size:11px; font-weight:800; z-index:50;
     box-shadow:0 3px 10px rgba(216,167,42,0.25);
   }
-  .admin-tools {
-    background:#fffbf0; border:1.5px dashed #d8a72a;
-    border-radius:14px; padding:12px 14px; margin-bottom:12px;
+
+  /* 관리자 — 요청서 목록 */
+  .filter-bar {
+    display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;
+    background:#fff; padding:10px; border-radius:12px; border:1px solid #ece5d6;
   }
-  .admin-tools .ttl { font-size:13px; font-weight:800; color:#a37c0a; margin-bottom:8px; }
-  .admin-tools button {
-    background:#fff; border:1.5px solid #d8cdb8;
-    border-radius:8px; padding:7px 12px; font-size:12px;
-    font-weight:700; color:#5a4f3a; margin-right:4px; margin-bottom:4px;
+  .filter-chip {
+    padding:7px 14px; border:1.5px solid #d8cdb8; border-radius:999px;
+    font-size:12.5px; font-weight:700; cursor:pointer; color:#5a4f3a;
+    background:#fff;
   }
-  .admin-tools button:hover { background:#faf6ee; }
-  .admin-edit-input {
-    border:1px dashed #d8a72a !important; background:#fffbf0 !important;
-    padding:3px 6px; font-size:12.5px; font-weight:700; border-radius:5px;
-    color:#5a4f3a;
+  .filter-chip.on { background:#4a8262; color:#fff; border-color:#4a8262; }
+  .filter-chip .cnt {
+    background:rgba(0,0,0,0.08); padding:1px 7px; border-radius:999px;
+    font-size:10.5px; margin-left:5px;
+  }
+  .filter-chip.on .cnt { background:rgba(255,255,255,0.25); }
+
+  .req-list { display:flex; flex-direction:column; gap:8px; }
+  .req-card {
+    background:#fff; border:1px solid #ece5d6; border-left:5px solid #d8a72a;
+    border-radius:12px; padding:14px 16px;
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    cursor:pointer; transition:all 0.15s;
+  }
+  .req-card:hover { box-shadow:0 6px 18px rgba(0,0,0,0.06); transform:translateY(-1px); }
+  .req-card.status-confirmed { border-left-color:#4a8262; }
+  .req-card.status-rejected { border-left-color:#a39c8a; opacity:0.7; }
+  .req-card .info { flex:1; min-width:0; }
+  .req-card .name { font-size:15px; font-weight:800; color:#2c2820; }
+  .req-card .meta { font-size:11.5px; color:#8d8472; margin-top:3px; line-height:1.4; }
+  .req-card .meta-line { display:block; }
+  .req-card .status-pill {
+    padding:3px 10px; border-radius:999px; font-size:10.5px; font-weight:800;
+    flex-shrink:0;
+  }
+  .status-pill.대기 { background:#fdf4e0; color:#a37c0a; }
+  .status-pill.확정 { background:#e5f0e8; color:#3d6e52; }
+  .status-pill.거절 { background:#f0eadb; color:#8d8472; }
+
+  /* 확정 모달 */
+  .modal-bg {
+    position:fixed; inset:0; background:rgba(44,40,32,0.55);
+    backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center;
+    z-index:300; padding:16px;
+  }
+  .modal-bg.show { display:flex; }
+  .modal {
+    background:#fff; border-radius:18px;
+    width:100%; max-width:440px;
+    max-height:90vh; overflow-y:auto;
+    box-shadow:0 18px 50px rgba(0,0,0,0.2);
+  }
+  .modal-head { padding:18px 20px 12px; border-bottom:1px solid #ece5d6; }
+  .modal-head .t { font-size:17px; font-weight:800; color:#2c2820; }
+  .modal-head .s { font-size:12px; color:#8d8472; margin-top:4px; }
+  .modal-body { padding:16px 20px; }
+  .modal-foot {
+    padding:12px 20px 18px; display:flex; gap:8px; justify-content:flex-end;
+    border-top:1px solid #ece5d6;
   }
 
+  /* 요청서 입력 영역 토글 */
+  .toggle-detail {
+    text-align:center; padding:14px; background:#fff;
+    border:1.5px dashed #d8cdb8; border-radius:12px;
+    margin-bottom:12px; cursor:pointer;
+    font-size:13.5px; font-weight:700; color:#4a8262;
+  }
+  .toggle-detail:hover { background:#fafaf3; }
+
+  .empty-state {
+    text-align:center; padding:60px 20px; color:#a39c8a;
+    background:#fff; border-radius:14px; border:1px solid #ece5d6;
+  }
+  .empty-state .emoji { font-size:48px; display:block; margin-bottom:12px; }
+
   @media (min-width:600px) {
-    .greet { font-size:22px; }
+    .greet { font-size:23px; }
     .chip { font-size:13.5px; padding:10px 15px; }
   }
 </style>
@@ -222,7 +288,7 @@
 
 <div id="loadingScreen" class="center-screen">
   <div class="spin"></div>
-  <div style="font-size:14px;color:#6b6450;">상담 양식 불러오는 중...</div>
+  <div style="font-size:14px;color:#6b6450;">불러오는 중...</div>
 </div>
 
 <div id="errorScreen" class="center-screen" style="display:none;">
@@ -233,32 +299,73 @@
 
 <div id="doneScreen" class="done-screen" style="display:none;">
   <div class="done-emoji">🎉</div>
-  <div class="done-title">제출 완료!</div>
+  <div class="done-title" id="doneTitle">제출 완료!</div>
   <div class="done-msg" id="doneMsg">소중한 의견 감사합니다.<br>담당자가 확인 후 곧 연락드릴게요.</div>
-  <button class="btn-secondary" onclick="goBackToForm()" style="margin-top:14px;">← 다시 수정하기</button>
 </div>
 
 <div id="formApp" class="wrap" style="display:none;">
   <!-- 동적 -->
 </div>
 
+<div id="listApp" class="wrap wide" style="display:none;">
+  <!-- 동적 (사장님 목록) -->
+</div>
+
 <div id="saveBar" class="save-bar" style="display:none;">
   <div class="auto-stat" id="autoStat">자동 저장 대기</div>
-  <button class="btn-save" id="saveBtn" onclick="saveAndDone()">✅ 작성 완료</button>
+  <button class="btn-primary" id="saveBtn" onclick="submitRequest()">✅ 제출하기</button>
 </div>
 
 <div id="adminBadge" class="admin-badge" style="display:none;">👑 사장님 모드</div>
+
+<!-- 확정 모달 -->
+<div class="modal-bg" id="confirmModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="t">📅 상담 일정 확정</div>
+      <div class="s">아래 일정을 정하면 동네Bro 「상담 일정」「상담 정리」에 자동 등록됩니다.</div>
+    </div>
+    <div class="modal-body">
+      <div class="fld">
+        <div class="lbl">상담 날짜 / 시간 <span class="req">*</span></div>
+        <input type="datetime-local" id="confirmDateTime">
+      </div>
+      <div class="fld">
+        <div class="lbl">상담 장소</div>
+        <select id="confirmPlace">
+          <option value="현장방문">현장 방문 상담</option>
+          <option value="사무실">사무실 내방 상담</option>
+          <option value="화상">화상 상담</option>
+          <option value="전화">전화 상담</option>
+        </select>
+      </div>
+      <div class="fld">
+        <div class="lbl">담당자 메모</div>
+        <textarea id="confirmNote" rows="3" placeholder="예) 견적 예산 1억 / 전체 리모델링"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-secondary" onclick="closeConfirmModal()">취소</button>
+      <button class="btn-primary" onclick="doConfirm()">📅 확정 등록</button>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
 <script>
   /* ============================================================
-   * 동네Bro 상담 사이트 v1
-   * URL: /?c=COMPANY_ID&t=CONSULT_ID  (고객용)
-   *      /?c=COMPANY_ID&t=CONSULT_ID&admin=any  (사장님 편집 + 템플릿 수정)
+   * 동네Bro 상담 요청 사이트 v2
+   * URL 모드:
+   *   /?c=COMPANY              → 고객 신규 요청서 작성
+   *   /?c=COMPANY&t=REQ_ID     → 고객 본인 요청서 (또는 보기)
+   *   /?c=COMPANY&admin=KEY    → 사장님 — 전체 요청서 목록
+   *   /?c=COMPANY&admin=KEY&t=REQ_ID → 사장님 — 요청서 상세 + 확정
    *
-   * 같은 Supabase 사용 — state.consultTidies / state._v196Template
-   * 동네Bro 사이트와 자동 sync
+   * 데이터:
+   *   state.consultTidies[] — 각 항목에 _status/_source/_consultationId 추가
+   *   state.consultations[] — 확정 시 새 일정 자동 추가
+   *   state._v196Template   — 체크리스트 양식
    * ============================================================ */
 
   const SUPABASE_URL = 'https://pshcyqamfclukkoqigvb.supabase.co';
@@ -266,7 +373,7 @@
   const REST = SUPABASE_URL + '/rest/v1';
   function HDR(){ return { 'apikey':SUPABASE_KEY, 'Authorization':'Bearer '+SUPABASE_KEY, 'Content-Type':'application/json', 'Prefer':'return=representation' }; }
 
-  /* 기본 템플릿 (state._v196Template 가 없을 때 fallback) */
+  /* 기본 템플릿 (fallback) */
   const DEFAULT_TEMPLATE = {
     version: 1,
     sections: [
@@ -307,104 +414,139 @@
       { id:'quoteNote', title:'견적 참고 사항', type:'textarea' }
     ]
   };
-  /* 고객 모드에선 상담 결과/견적 참고 같은 내부용 섹션은 자동 제외 */
-  const CUSTOMER_HIDE = ['result','quoteNote'];
+  const CUSTOMER_HIDE = ['result','quoteNote']; /* 고객 모드에선 자동 숨김 */
+  const CORE_SECTIONS = ['basic','requirements']; /* 「자세히 적기」 펼치기 전 보이는 섹션 */
 
   /* ====== state ====== */
   let companyId = null;
   let consultId = null;
   let isAdmin = false;
+  let mode = null;  /* 'admin-list' | 'admin-detail' | 'customer-new' | 'customer-edit' */
   let appState = null;
   let consult = null;
   let template = null;
   let companySetup = null;
   let saveTimer = null;
   let dirty = false;
+  let showDetail = false;
+  let listFilter = 'all';
+  let confirmTargetId = null;
 
   function $(id){ return document.getElementById(id); }
-  function show(id){ $(id).style.display = ''; }
-  function hide(id){ $(id).style.display = 'none'; }
+  function show(id){ const el = $(id); if(el) el.style.display = ''; }
+  function hide(id){ const el = $(id); if(el) el.style.display = 'none'; }
   function escH(x){ return (x==null?'':String(x)).replace(/[<>&"]/g, c => ({"<":"&lt;",">":"&gt;","&":"&amp;","\"":"&quot;"})[c]); }
   function sanitizeKey(s){ return String(s).replace(/[^a-zA-Z0-9가-힣]/g,'_'); }
   function _getP(o, p){ if(!o) return undefined; const ps = p.split('.'); let c = o; for(let i=0;i<ps.length;i++){ if(c==null) return undefined; c = c[ps[i]]; } return c; }
   function _setP(o, p, v){ const ps = p.split('.'); let c = o; for(let i=0;i<ps.length-1;i++){ const k=ps[i]; if(!c[k] || typeof c[k] !== 'object') c[k]={}; c = c[k]; } c[ps[ps.length-1]] = v; }
+  function uuid(){ return 'req_' + Date.now() + '_' + Math.random().toString(36).slice(2,8); }
   function showToast(msg, err){
     const t = $('toast');
     t.textContent = msg;
     t.className = 'toast show' + (err?' err':'');
     setTimeout(() => t.classList.remove('show'), 2400);
   }
-
-  /* ====== URL 파라미터 ====== */
-  function parseURL(){
-    const u = new URL(location.href);
-    companyId = u.searchParams.get('c') || u.searchParams.get('company');
-    consultId = u.searchParams.get('t') || u.searchParams.get('cid');
-    isAdmin = !!(u.searchParams.get('admin') || u.searchParams.get('a'));
-  }
-
-  /* ====== 데이터 ====== */
-  async function loadData(){
-    if(!companyId){
-      showError('🔒','회사 정보가 없는 링크예요', '담당자에게 정확한 링크를 받아주세요.');
-      return;
-    }
-    try{
-      const r = await fetch(REST + '/app_state?id=eq.' + encodeURIComponent(companyId) + '&select=state', { headers: HDR() });
-      if(!r.ok) throw new Error('HTTP ' + r.status);
-      const rows = await r.json();
-      if(!rows || !rows[0]){
-        showError('🔒','회사를 찾을 수 없어요', '링크가 올바른지 확인해주세요.');
-        return;
-      }
-      appState = rows[0].state || {};
-      companySetup = appState.companySetup || {};
-
-      /* 템플릿 */
-      template = (appState._v196Template && Array.isArray(appState._v196Template.sections) && appState._v196Template.sections.length)
-        ? appState._v196Template
-        : JSON.parse(JSON.stringify(DEFAULT_TEMPLATE));
-
-      /* 상담 데이터 */
-      if(!consultId){
-        showError('🔒','상담 정보가 없는 링크예요','담당자에게 정확한 링크를 받아주세요.');
-        return;
-      }
-      consult = (appState.consultTidies || []).find(c => c && c.id === consultId && !c._deleted);
-      if(!consult){
-        /* 사장님 모드면 새로 생성 가능 */
-        if(isAdmin){
-          consult = { id: consultId, checklist: {}, createdAt: Date.now(), updatedAt: Date.now() };
-        } else {
-          showError('🔒','상담을 찾을 수 없어요','담당자에게 새 링크를 요청해주세요.');
-          return;
-        }
-      }
-      if(!consult.checklist) consult.checklist = {};
-
-      hide('loadingScreen');
-      show('formApp');
-      $('saveBar').style.display = '';
-      if(isAdmin){ $('adminBadge').style.display = ''; }
-      render();
-    }catch(e){
-      console.error(e);
-      showError('⚠️','불러오기 실패', '인터넷 연결을 확인하고 다시 시도해주세요.\n' + (e.message||e));
-    }
-  }
   function showError(emoji, title, msg){
-    hide('loadingScreen'); hide('formApp');
+    hide('loadingScreen'); hide('formApp'); hide('listApp');
     document.querySelector('#errorScreen .err-emoji').textContent = emoji;
     $('errTitle').textContent = title;
     $('errMsg').textContent = msg;
     show('errorScreen');
   }
 
-  /* ====== 저장 ====== */
-  async function pushToCloud(){
+  /* ====== URL ====== */
+  function parseURL(){
+    const u = new URL(location.href);
+    companyId = u.searchParams.get('c') || u.searchParams.get('company');
+    consultId = u.searchParams.get('t') || u.searchParams.get('cid');
+    isAdmin = !!(u.searchParams.get('admin') || u.searchParams.get('a'));
+    if(isAdmin && !consultId) mode = 'admin-list';
+    else if(isAdmin && consultId) mode = 'admin-detail';
+    else if(!consultId) mode = 'customer-new';
+    else mode = 'customer-edit';
+  }
+
+  /* ====== 데이터 로딩 ====== */
+  async function loadAppState(){
+    const r = await fetch(REST + '/app_state?id=eq.' + encodeURIComponent(companyId) + '&select=state', { headers: HDR() });
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const rows = await r.json();
+    if(!rows || !rows[0]) throw new Error('회사 없음');
+    appState = rows[0].state || {};
+    companySetup = appState.companySetup || {};
+    template = (appState._v196Template && Array.isArray(appState._v196Template.sections) && appState._v196Template.sections.length)
+      ? appState._v196Template
+      : JSON.parse(JSON.stringify(DEFAULT_TEMPLATE));
+  }
+
+  async function init(){
+    parseURL();
+    if(!companyId){
+      showError('🔒','회사 정보가 없는 링크예요', '담당자에게 정확한 링크를 받아주세요.');
+      return;
+    }
+    try{
+      await loadAppState();
+    }catch(e){
+      console.error(e);
+      showError('⚠️','불러오기 실패', '인터넷 연결을 확인하고 다시 시도해주세요.\n' + (e.message||e));
+      return;
+    }
+
+    if(isAdmin) $('adminBadge').style.display = '';
+
+    if(mode === 'admin-list'){
+      hide('loadingScreen');
+      renderAdminList();
+      return;
+    }
+
+    if(mode === 'admin-detail' || mode === 'customer-edit'){
+      consult = (appState.consultTidies || []).find(c => c && c.id === consultId && !c._deleted);
+      if(!consult){
+        if(mode === 'admin-detail'){
+          /* 관리자라면 새로 만든 항목으로 처리 */
+          consult = newRequestObj();
+          consult.id = consultId;
+        } else {
+          showError('🔒','요청서를 찾을 수 없어요', '담당자에게 새 링크를 요청해주세요.');
+          return;
+        }
+      }
+      if(!consult.checklist) consult.checklist = {};
+      hide('loadingScreen');
+      show('formApp');
+      $('saveBar').style.display = '';
+      renderForm();
+      return;
+    }
+
+    /* customer-new: 새 요청서 */
+    consult = newRequestObj();
+    hide('loadingScreen');
+    show('formApp');
+    $('saveBar').style.display = '';
+    renderForm();
+  }
+
+  function newRequestObj(){
+    return {
+      id: uuid(),
+      title: '',
+      checklist: {},
+      _status: 'request',
+      _source: 'customer-request',
+      _submittedAt: null,
+      _consultationId: null,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+  }
+
+  /* ====== 저장 (cloud) ====== */
+  async function pushToCloud(extraPatch){
     if(!companyId || !consult) return false;
     try{
-      /* 최신 state 가져와 머지 (다른 직원과 충돌 방지) */
       const r = await fetch(REST + '/app_state?id=eq.' + encodeURIComponent(companyId) + '&select=state', { headers: HDR() });
       const rows = await r.json();
       const latest = (rows && rows[0] && rows[0].state) || appState || {};
@@ -414,10 +556,8 @@
       if(idx >= 0) latest.consultTidies[idx] = JSON.parse(JSON.stringify(consult));
       else latest.consultTidies.push(JSON.parse(JSON.stringify(consult)));
 
-      /* 사장님 모드에선 템플릿도 동시에 push */
-      if(isAdmin && template){
-        latest._v196Template = template;
-      }
+      if(isAdmin && template) latest._v196Template = template;
+      if(extraPatch) extraPatch(latest);
 
       const pr = await fetch(REST + '/app_state?id=eq.' + encodeURIComponent(companyId), {
         method:'PATCH',
@@ -427,64 +567,88 @@
       if(!pr.ok) throw new Error('HTTP ' + pr.status);
       appState = latest;
       dirty = false;
-      $('autoStat').textContent = '✓ 저장됨';
-      $('autoStat').classList.add('saved');
+      const stat = $('autoStat');
+      if(stat){ stat.textContent = '✓ 저장됨'; stat.classList.add('saved'); }
       return true;
     }catch(e){
       console.error('push err', e);
-      $('autoStat').textContent = '⚠️ 저장 실패 — 다시 시도 중';
-      $('autoStat').classList.remove('saved');
+      const stat = $('autoStat');
+      if(stat){ stat.textContent = '⚠️ 저장 실패 — 다시 시도'; stat.classList.remove('saved'); }
       return false;
     }
   }
   function scheduleSave(){
     dirty = true;
-    $('autoStat').textContent = '자동 저장 중...';
-    $('autoStat').classList.remove('saved');
+    const stat = $('autoStat');
+    if(stat){ stat.textContent = '자동 저장 중...'; stat.classList.remove('saved'); }
     clearTimeout(saveTimer);
     saveTimer = setTimeout(pushToCloud, 1200);
   }
 
-  /* ====== 렌더 ====== */
-  function render(){
+  /* ====== 폼 렌더 ====== */
+  function renderForm(){
+    hide('listApp');
+    show('formApp');
     const app = $('formApp');
     const data = consult.checklist;
     const visibleSections = template.sections.filter(s => isAdmin || CUSTOMER_HIDE.indexOf(s.id) === -1);
 
-    const b = (data.basic || {});
+    const b = data.basic || {};
     const customerName = b.customerName || consult.customerName || '고객';
     const greetingName = customerName + (customerName.endsWith('님') ? '' : '님');
-
     const companyName = companySetup.company_name || '동네Bro';
-    const logoLetter = companyName.charAt(0);
+    const logoLetter = companyName.charAt(0) || '동';
 
     let html = '';
 
     /* 헤더 */
     html += '<div class="head-card">';
     html += '<div class="brand-row"><div class="logo">' + escH(logoLetter) + '</div>';
-    html += '<div><div class="brand-name">' + escH(companyName) + '</div><div class="brand-sub">인테리어 상담 양식</div></div></div>';
-    html += '<div class="greet">안녕하세요 <b>' + escH(greetingName) + '</b>!</div>';
-    html += '<div class="intro">우리 집 이야기를 함께 정리해봐요.<br>편하게 떠오르는 대로 적어주시면, 사장님이 최적의 인테리어를 제안해드릴게요. ✨</div>';
+    html += '<div><div class="brand-name">' + escH(companyName) + '</div><div class="brand-sub">인테리어 상담 요청서</div></div></div>';
+    if(customerName === '고객' && mode === 'customer-new'){
+      html += '<div class="greet">안녕하세요! 👋</div>';
+      html += '<div class="intro">우리 집에 대한 이야기를 들려주세요.<br>이름과 연락처, 평형 정도만 알려주시면 사장님이 연락드려요. ✨</div>';
+    } else {
+      html += '<div class="greet">안녕하세요 <b>' + escH(greetingName) + '</b>!</div>';
+      html += '<div class="intro">아래 내용을 입력해 주시면 사장님이 확인 후 연락드려요.</div>';
+    }
     html += '<div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>';
     html += '<div class="progress-text" id="progText">0% 작성됨</div></div>';
     html += '</div>';
 
     /* 관리자 도구 */
     if(isAdmin){
-      html += '<div class="admin-tools">';
-      html += '<div class="ttl">👑 사장님 도구</div>';
-      html += '<button onclick="window.adminSaveTpl()">💾 템플릿 저장</button>';
-      html += '<button onclick="window.adminCopyLink()">🔗 고객 링크 복사</button>';
-      html += '<button onclick="window.adminToggleEdit()">' + (window._editTpl?'✓ 양식 편집 끝':'✏️ 양식 편집') + '</button>';
-      html += '<button onclick="window.adminResetTpl()">🔄 기본 양식 복원</button>';
+      html += '<div style="background:#fffbf0;border:1.5px dashed #d8a72a;border-radius:14px;padding:12px 14px;margin-bottom:12px;">';
+      html += '<div style="font-size:13px;font-weight:800;color:#a37c0a;margin-bottom:8px;">👑 사장님 도구</div>';
+      if(consult._status !== '확정' && consult._status !== 'confirmed'){
+        html += '<button class="btn-primary" style="margin-right:4px;font-size:12.5px;padding:8px 14px;min-width:auto;" onclick="openConfirmModal()">📅 일정 확정</button>';
+      }
+      html += '<button class="btn-secondary" style="margin-right:4px;font-size:12px;padding:8px 12px;" onclick="goAdminList()">← 목록</button>';
+      html += '<button class="btn-secondary" style="margin-right:4px;font-size:12px;padding:8px 12px;" onclick="copyShareLink()">🔗 고객 링크 복사</button>';
+      if(consult._status !== 'rejected'){
+        html += '<button class="btn-danger" style="font-size:12px;padding:8px 12px;" onclick="rejectRequest()">✕ 거절</button>';
+      }
+      if(consult._status){
+        html += '<div style="margin-top:8px;font-size:12px;color:#6b6450;">현재 상태: <b style="color:#4a8262;">' + escH(getStatusLabel(consult._status)) + '</b>';
+        if(consult._consultationId) html += ' · 일정 ID: <code>' + escH(consult._consultationId) + '</code>';
+        html += '</div>';
+      }
       html += '</div>';
     }
 
     /* 섹션들 */
     visibleSections.forEach(sec => {
+      const isCore = CORE_SECTIONS.indexOf(sec.id) !== -1;
+      if(!showDetail && !isAdmin && !isCore) return; /* 「자세히 적기」 펼치기 전 숨김 (고객 모드) */
       html += renderSection(sec, data);
     });
+
+    /* 「자세히 적기」 토글 */
+    if(!isAdmin && !showDetail){
+      html += '<div class="toggle-detail" onclick="window.toggleDetail()">📝 자세히 적기 (공간별·마감재 등)</div>';
+    } else if(!isAdmin && showDetail){
+      html += '<div class="toggle-detail" onclick="window.toggleDetail()">↑ 간단히 접기</div>';
+    }
 
     app.innerHTML = html;
     updateProgress();
@@ -509,11 +673,7 @@
     } else if(sec.type === 'checkrows'){
       body = sec.rows.map(r => renderCheckRow(sec, r, data)).join('');
     }
-    let editBtn = '';
-    if(isAdmin && window._editTpl){
-      editBtn = ' <button onclick="window.adminRenameSection(\'' + sec.id + '\')" style="font-size:10px;padding:3px 7px;background:#fffbf0;border:1px dashed #d8a72a;border-radius:5px;color:#a37c0a;font-weight:700;margin-left:6px;">제목 수정</button>';
-    }
-    return '<div class="section"><div class="section-head"><div class="ttl">' + escH(sec.title) + editBtn + '</div></div><div class="section-body">' + body + '</div></div>';
+    return '<div class="section"><div class="section-head"><div class="ttl">' + escH(sec.title) + '</div></div><div class="section-body">' + body + '</div></div>';
   }
 
   function renderFieldInput(sec, f, data){
@@ -527,22 +687,18 @@
 
   function renderFieldCheck(sec, f, data){
     const base = sec.id + '.' + f.k;
-    let chips = (f.options||[]).map((opt, idx) => {
+    let chips = (f.options||[]).map((opt) => {
       const key = base + '.opts.' + sanitizeKey(opt);
       const on = !!_getP(data, key);
-      let label = renderEditableLabel(opt, () => 'window.adminRenameFOpt(\'' + sec.id + '\',\'' + f.k + '\',' + idx + ',this.value)');
       let chip = '<label class="chip' + (on?' on':'') + '">'
         + '<input type="checkbox" data-key="' + key + '"' + (on?' checked':'') + ' onchange="onCheck(this)">'
-        + label + '</label>';
+        + '<span>' + escH(opt) + '</span></label>';
       if((f.extras||[]).indexOf(opt) !== -1){
         const ex = _getP(data, base + '.extra.' + sanitizeKey(opt)) || '';
         chip += '<input class="extra-input" placeholder="상세" data-key="' + base + '.extra.' + sanitizeKey(opt) + '" value="' + escH(ex) + '" oninput="onInput(this)">';
       }
       return chip;
     }).join(' ');
-    if(isAdmin && window._editTpl){
-      chips += ' <button onclick="window.adminAddFOpt(\'' + sec.id + '\',\'' + f.k + '\')" style="font-size:11px;padding:5px 9px;background:#fffbf0;border:1px dashed #d8a72a;border-radius:6px;color:#a37c0a;font-weight:700;">+ 옵션</button>';
-    }
     return '<div class="fld">'
       + '<div class="lbl">' + escH(f.l) + '</div>'
       + '<div class="chip-group">' + chips + '</div>'
@@ -550,42 +706,34 @@
   }
 
   function renderCheckChips(sec, holder, data){
-    let chips = (holder.options||[]).map((opt, idx) => {
+    let chips = (holder.options||[]).map((opt) => {
       const key = sec.id + '.opts.' + sanitizeKey(opt);
       const on = !!_getP(data, key);
-      let label = renderEditableLabel(opt, () => 'window.adminRenameSecOpt(\'' + sec.id + '\',' + idx + ',this.value)');
       let chip = '<label class="chip' + (on?' on':'') + '">'
         + '<input type="checkbox" data-key="' + key + '"' + (on?' checked':'') + ' onchange="onCheck(this)">'
-        + label + '</label>';
+        + '<span>' + escH(opt) + '</span></label>';
       if((holder.extras||[]).indexOf(opt) !== -1){
         const ex = _getP(data, sec.id + '.extra.' + sanitizeKey(opt)) || '';
         chip += '<input class="extra-input" placeholder="상세" data-key="' + sec.id + '.extra.' + sanitizeKey(opt) + '" value="' + escH(ex) + '" oninput="onInput(this)">';
       }
       return chip;
     }).join(' ');
-    if(isAdmin && window._editTpl){
-      chips += ' <button onclick="window.adminAddSecOpt(\'' + sec.id + '\')" style="font-size:11px;padding:5px 9px;background:#fffbf0;border:1px dashed #d8a72a;border-radius:6px;color:#a37c0a;font-weight:700;">+ 옵션</button>';
-    }
     return '<div class="chip-group">' + chips + '</div>';
   }
 
   function renderCheckRow(sec, r, data){
-    let chips = (r.options||[]).map((opt, idx) => {
+    let chips = (r.options||[]).map((opt) => {
       const key = sec.id + '.' + r.k + '.opts.' + sanitizeKey(opt);
       const on = !!_getP(data, key);
-      let label = renderEditableLabel(opt, () => 'window.adminRenameCrOpt(\'' + sec.id + '\',\'' + r.k + '\',' + idx + ',this.value)');
       let chip = '<label class="chip' + (on?' on':'') + '">'
         + '<input type="checkbox" data-key="' + key + '"' + (on?' checked':'') + ' onchange="onCheck(this)">'
-        + label + '</label>';
+        + '<span>' + escH(opt) + '</span></label>';
       if((r.extras||[]).indexOf(opt) !== -1){
         const ex = _getP(data, sec.id + '.' + r.k + '.extra.' + sanitizeKey(opt)) || '';
         chip += '<input class="extra-input" placeholder="상세" data-key="' + sec.id + '.' + r.k + '.extra.' + sanitizeKey(opt) + '" value="' + escH(ex) + '" oninput="onInput(this)">';
       }
       return chip;
     }).join(' ');
-    if(isAdmin && window._editTpl){
-      chips += ' <button onclick="window.adminAddCrOpt(\'' + sec.id + '\',\'' + r.k + '\')" style="font-size:11px;padding:5px 9px;background:#fffbf0;border:1px dashed #d8a72a;border-radius:6px;color:#a37c0a;font-weight:700;">+ 옵션</button>';
-    }
     return '<div class="check-row">'
       + '<div class="lbl">' + escH(r.l) + '</div>'
       + '<div class="chip-group">' + chips + '</div>'
@@ -600,19 +748,12 @@
       return '<textarea data-key="' + path + '" oninput="onInput(this)" placeholder="' + escH(placeholder) + '">' + escH(v) + '</textarea>';
     }).join('');
     return '<div class="room-row">'
-      + '<div class="room-name"><span class="pin">📌</span><span>' + escH(r) + '</span></div>'
+      + '<div class="room-name"><span>📌</span><span>' + escH(r) + '</span></div>'
       + cells
       + '</div>';
   }
 
-  function renderEditableLabel(opt, onblurFnFactory){
-    if(isAdmin && window._editTpl){
-      return '<input class="admin-edit-input" value="' + escH(opt) + '" onclick="event.preventDefault();event.stopPropagation();" onblur="' + onblurFnFactory() + '" style="margin-right:4px;width:80px;">';
-    }
-    return '<span>' + escH(opt) + '</span>';
-  }
-
-  /* ====== 입력 핸들러 ====== */
+  /* ====== 입력 ====== */
   function onInput(el){
     const path = el.getAttribute('data-key');
     if(!path) return;
@@ -633,6 +774,12 @@
   }
   window.onInput = onInput;
   window.onCheck = onCheck;
+
+  function toggleDetail(){
+    showDetail = !showDetail;
+    renderForm();
+  }
+  window.toggleDetail = toggleDetail;
 
   function updateProgress(){
     if(!template || !consult) return;
@@ -676,110 +823,237 @@
     const t = $('progText'); if(t) t.textContent = pct + '% 작성됨';
   }
 
-  /* ====== 저장 + 완료 ====== */
-  async function saveAndDone(){
+  /* ====== 제출 (고객) / 저장 (관리자) ====== */
+  async function submitRequest(){
     if(!consult) return;
+    /* 필수 필드 — 이름 + 연락처 */
+    const b = consult.checklist.basic || {};
+    if(mode === 'customer-new' || mode === 'customer-edit'){
+      if(!b.customerName || !b.customerPhone){
+        showToast('이름과 연락처는 꼭 입력해 주세요', true);
+        return;
+      }
+    }
     $('saveBtn').disabled = true;
-    $('saveBtn').textContent = '저장 중...';
+    $('saveBtn').textContent = '제출 중...';
+    if(mode === 'customer-new' || mode === 'customer-edit'){
+      consult._submittedAt = consult._submittedAt || Date.now();
+      consult._status = consult._status || 'request';
+      if(!consult.title) consult.title = (b.customerName || '고객') + ' 상담 요청';
+    }
     const ok = await pushToCloud();
     $('saveBtn').disabled = false;
-    $('saveBtn').textContent = '✅ 작성 완료';
+    $('saveBtn').textContent = isAdmin ? '💾 저장' : '✅ 제출하기';
     if(ok){
-      hide('formApp'); hide('saveBar');
-      show('doneScreen');
+      if(isAdmin){
+        showToast('✅ 저장 완료');
+      } else {
+        hide('formApp'); hide('saveBar');
+        $('doneTitle').textContent = '🎉 요청 완료!';
+        $('doneMsg').innerHTML = '소중한 시간 내주셔서 감사해요.<br>담당자가 확인 후 빠르게 연락드릴게요. 💛';
+        show('doneScreen');
+      }
     } else {
-      showToast('저장 실패. 다시 시도해주세요.', true);
+      showToast('저장 실패 — 다시 시도해주세요', true);
     }
   }
-  window.saveAndDone = saveAndDone;
-  function goBackToForm(){
-    hide('doneScreen');
-    show('formApp');
-    $('saveBar').style.display = '';
-  }
-  window.goBackToForm = goBackToForm;
+  window.submitRequest = submitRequest;
 
-  /* ====== 관리자 도구 ====== */
-  window._editTpl = false;
-  window.adminToggleEdit = function(){
-    window._editTpl = !window._editTpl;
-    render();
-  };
-  window.adminSaveTpl = async function(){
-    if(!isAdmin) return;
-    showToast('템플릿 저장 중...');
+  /* ====== 사장님 — 요청서 목록 ====== */
+  function getStatusLabel(s){
+    if(s === '확정' || s === 'confirmed') return '확정';
+    if(s === 'rejected' || s === '거절') return '거절';
+    return '대기';
+  }
+  function getStatusKey(s){
+    const l = getStatusLabel(s);
+    return l;
+  }
+
+  function renderAdminList(){
+    hide('formApp');
+    show('listApp');
+    const app = $('listApp');
+    let all = (appState.consultTidies || []).filter(c => c && !c._deleted);
+    /* 정렬: 대기 우선 → 최신순 */
+    all.sort((a,b) => {
+      const sa = getStatusKey(a._status), sb = getStatusKey(b._status);
+      const wa = sa === '대기' ? 0 : sa === '확정' ? 1 : 2;
+      const wb = sb === '대기' ? 0 : sb === '확정' ? 1 : 2;
+      if(wa !== wb) return wa - wb;
+      return (b.updatedAt||0) - (a.updatedAt||0);
+    });
+
+    const cntAll = all.length;
+    const cntWait = all.filter(c => getStatusKey(c._status) === '대기').length;
+    const cntDone = all.filter(c => getStatusKey(c._status) === '확정').length;
+    const cntRej = all.filter(c => getStatusKey(c._status) === '거절').length;
+
+    const filtered = listFilter === 'all' ? all : all.filter(c => getStatusKey(c._status) === listFilter);
+
+    let html = '';
+    html += '<div class="head-card">';
+    html += '<div class="brand-row"><div class="logo">👑</div>';
+    html += '<div><div class="brand-name">사장님 모드 — 상담 요청 관리</div>';
+    html += '<div class="brand-sub">' + escH(companySetup.company_name||'동네Bro') + ' · 전체 ' + cntAll + '건</div></div></div>';
+    html += '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">';
+    html += '<button class="btn-secondary" style="font-size:12px;padding:8px 12px;" onclick="copyAdminLink()">🔗 관리 URL 복사</button>';
+    html += '<button class="btn-secondary" style="font-size:12px;padding:8px 12px;" onclick="copyCustomerLink()">🔗 고객 요청서 링크 복사</button>';
+    html += '<button class="btn-secondary" style="font-size:12px;padding:8px 12px;" onclick="window.location.reload()">🔄 새로고침</button>';
+    html += '</div></div>';
+
+    /* 필터 */
+    html += '<div class="filter-bar">';
+    html += '<button class="filter-chip' + (listFilter==='all'?' on':'') + '" onclick="setFilter(\'all\')">전체 <span class="cnt">' + cntAll + '</span></button>';
+    html += '<button class="filter-chip' + (listFilter==='대기'?' on':'') + '" onclick="setFilter(\'대기\')">⏳ 대기중 <span class="cnt">' + cntWait + '</span></button>';
+    html += '<button class="filter-chip' + (listFilter==='확정'?' on':'') + '" onclick="setFilter(\'확정\')">✅ 확정됨 <span class="cnt">' + cntDone + '</span></button>';
+    html += '<button class="filter-chip' + (listFilter==='거절'?' on':'') + '" onclick="setFilter(\'거절\')">✕ 거절 <span class="cnt">' + cntRej + '</span></button>';
+    html += '</div>';
+
+    if(filtered.length === 0){
+      html += '<div class="empty-state"><span class="emoji">📭</span>해당 항목이 없어요</div>';
+    } else {
+      html += '<div class="req-list">';
+      filtered.forEach(c => { html += renderListItem(c); });
+      html += '</div>';
+    }
+
+    app.innerHTML = html;
+  }
+
+  function renderListItem(c){
+    const b = c.checklist?.basic || {};
+    const status = getStatusKey(c._status);
+    const name = b.customerName || c.customerName || c.title || '이름 없음';
+    const phone = b.customerPhone || '';
+    const addr = b.addr || '';
+    const sizeArea = b.sizeArea || '';
+    const budget = b.budget || '';
+    const submittedAt = c._submittedAt || c.createdAt;
+    const dStr = submittedAt ? new Date(submittedAt).toLocaleDateString('ko-KR') + ' ' + new Date(submittedAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}) : '-';
+    const source = c._source === 'customer-request' ? '🌐 웹 요청' : '👑 직접 등록';
+    return '<div class="req-card status-' + (status==='확정'?'confirmed':status==='거절'?'rejected':'pending') + '" onclick="openDetail(\'' + c.id + '\')">'
+      + '<div class="info">'
+      + '<div class="name">' + escH(name) + (phone ? ' <span style="font-weight:600;color:#6b6450;">· ' + escH(phone) + '</span>' : '') + '</div>'
+      + '<div class="meta">'
+      + '<span class="meta-line">' + escH(source) + ' · 제출: ' + dStr + '</span>'
+      + (addr || sizeArea || budget ? '<span class="meta-line">' + [addr,sizeArea?sizeArea+'평':'',budget?'예산 '+budget:''].filter(Boolean).join(' · ') + '</span>' : '')
+      + '</div></div>'
+      + '<div class="status-pill ' + status + '">' + status + '</div>'
+      + '</div>';
+  }
+
+  function setFilter(f){ listFilter = f; renderAdminList(); }
+  window.setFilter = setFilter;
+
+  function openDetail(id){
+    /* admin 모드 유지하면서 t= 추가 */
+    const u = new URL(location.href);
+    u.searchParams.set('t', id);
+    location.href = u.toString();
+  }
+  window.openDetail = openDetail;
+
+  function goAdminList(){
+    const u = new URL(location.href);
+    u.searchParams.delete('t');
+    location.href = u.toString();
+  }
+  window.goAdminList = goAdminList;
+
+  function copyCustomerLink(){
+    const url = location.origin + location.pathname + '?c=' + encodeURIComponent(companyId);
+    navigator.clipboard.writeText(url).then(() => showToast('🔗 고객 요청서 링크 복사됨')).catch(() => prompt('아래 링크를 복사하세요:', url));
+  }
+  window.copyCustomerLink = copyCustomerLink;
+  function copyAdminLink(){
+    const url = location.origin + location.pathname + '?c=' + encodeURIComponent(companyId) + '&admin=1';
+    navigator.clipboard.writeText(url).then(() => showToast('🔗 관리 URL 복사됨')).catch(() => prompt('아래 링크를 복사하세요:', url));
+  }
+  window.copyAdminLink = copyAdminLink;
+  function copyShareLink(){
+    if(!consult) return;
+    const url = location.origin + location.pathname + '?c=' + encodeURIComponent(companyId) + '&t=' + encodeURIComponent(consult.id);
+    navigator.clipboard.writeText(url).then(() => showToast('🔗 고객 링크 복사됨')).catch(() => prompt('아래 링크를 복사하세요:', url));
+  }
+  window.copyShareLink = copyShareLink;
+
+  /* ====== 확정 ====== */
+  function openConfirmModal(){
+    if(!consult) return;
+    /* 기본 시간 — 내일 10시 */
+    const tomorrow = new Date(Date.now() + 24*60*60*1000);
+    tomorrow.setHours(10, 0, 0, 0);
+    const iso = tomorrow.toISOString().slice(0,16);
+    $('confirmDateTime').value = iso;
+    $('confirmPlace').value = '현장방문';
+    $('confirmNote').value = '';
+    $('confirmModal').classList.add('show');
+  }
+  window.openConfirmModal = openConfirmModal;
+  function closeConfirmModal(){ $('confirmModal').classList.remove('show'); }
+  window.closeConfirmModal = closeConfirmModal;
+
+  async function doConfirm(){
+    const dt = $('confirmDateTime').value;
+    if(!dt){ showToast('날짜와 시간을 정해주세요', true); return; }
+    const place = $('confirmPlace').value || '현장방문';
+    const note = $('confirmNote').value || '';
+
+    const b = consult.checklist.basic || {};
+    /* state.consultations 새 entry */
+    const consId = 'cs_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+    const consEntry = {
+      id: consId,
+      customer: b.customerName || consult.customerName || '고객',
+      phone: b.customerPhone || '',
+      addr: b.addr || '',
+      size: parseFloat(b.sizeArea) || 0,
+      budget: parseFloat((b.budget||'').replace(/[^0-9.]/g,'')) || 0,
+      source: '상담 요청',
+      method: place,
+      office: '',
+      appointmentDate: dt,
+      status: '예정',
+      note: note || '웹 상담 요청서로부터 자동 등록',
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+
+    consult._status = '확정';
+    consult._confirmedAt = Date.now();
+    consult._consultationId = consId;
+    consult.meetingDate = dt.slice(0,10);
+
+    const ok = await pushToCloud((latestState) => {
+      if(!Array.isArray(latestState.consultations)) latestState.consultations = [];
+      latestState.consultations.push(consEntry);
+    });
+
+    if(ok){
+      closeConfirmModal();
+      showToast('✅ 일정 확정 — 동네Bro 「상담 일정」「상담 정리」에 등록됨');
+      setTimeout(() => renderForm(), 400);
+    } else {
+      showToast('확정 실패 — 다시 시도해주세요', true);
+    }
+  }
+  window.doConfirm = doConfirm;
+
+  async function rejectRequest(){
+    if(!consult) return;
+    if(!confirm('이 요청을 거절 처리할까요?')) return;
+    consult._status = 'rejected';
+    consult._rejectedAt = Date.now();
     const ok = await pushToCloud();
-    if(ok) showToast('✅ 템플릿 저장 완료');
-  };
-  window.adminCopyLink = function(){
-    const url = location.origin + location.pathname + '?c=' + encodeURIComponent(companyId) + '&t=' + encodeURIComponent(consultId);
-    navigator.clipboard.writeText(url).then(() => showToast('🔗 고객 링크 복사됨'));
-  };
-  window.adminResetTpl = function(){
-    if(!confirm('기본 양식으로 복원합니다. 변경 사항이 사라져요.')) return;
-    template = JSON.parse(JSON.stringify(DEFAULT_TEMPLATE));
-    scheduleSave();
-    render();
-  };
-  window.adminRenameSection = function(sid){
-    const sec = template.sections.find(s => s.id === sid);
-    if(!sec) return;
-    const n = prompt('섹션 제목', sec.title);
-    if(n == null) return;
-    sec.title = n.trim() || sec.title;
-    scheduleSave();
-    render();
-  };
-
-  function _renameAnyOpt(secFinder, fieldFinder, idx, newName){
-    if(!newName.trim()) return;
-    const sec = secFinder(); if(!sec) return;
-    const arr = fieldFinder ? fieldFinder(sec) : sec;
-    const oldName = arr.options[idx];
-    const nm = newName.trim();
-    if(oldName === nm) return;
-    arr.options[idx] = nm;
-    if(arr.extras){
-      const ei = arr.extras.indexOf(oldName);
-      if(ei !== -1) arr.extras[ei] = nm;
+    if(ok){
+      showToast('✕ 거절 처리 완료');
+      setTimeout(() => goAdminList(), 600);
+    } else {
+      showToast('거절 처리 실패', true);
     }
-    scheduleSave();
-    render();
   }
-  window.adminRenameFOpt = function(sid, fk, idx, newName){
-    _renameAnyOpt(
-      () => template.sections.find(s => s.id === sid),
-      sec => sec.fields.find(f => f.k === fk),
-      idx, newName
-    );
-  };
-  window.adminRenameSecOpt = function(sid, idx, newName){
-    _renameAnyOpt(
-      () => template.sections.find(s => s.id === sid),
-      null, idx, newName
-    );
-  };
-  window.adminRenameCrOpt = function(sid, rk, idx, newName){
-    _renameAnyOpt(
-      () => template.sections.find(s => s.id === sid),
-      sec => sec.rows.find(r => r.k === rk),
-      idx, newName
-    );
-  };
-  window.adminAddFOpt = function(sid, fk){
-    const o = prompt('새 옵션'); if(!o) return;
-    const sec = template.sections.find(s => s.id === sid); if(!sec) return;
-    const f = sec.fields.find(x => x.k === fk); if(f){ f.options = f.options||[]; f.options.push(o.trim()); scheduleSave(); render(); }
-  };
-  window.adminAddSecOpt = function(sid){
-    const o = prompt('새 옵션'); if(!o) return;
-    const sec = template.sections.find(s => s.id === sid); if(sec){ sec.options.push(o.trim()); scheduleSave(); render(); }
-  };
-  window.adminAddCrOpt = function(sid, rk){
-    const o = prompt('새 옵션'); if(!o) return;
-    const sec = template.sections.find(s => s.id === sid); if(!sec) return;
-    const r = sec.rows.find(x => x.k === rk); if(r){ r.options.push(o.trim()); scheduleSave(); render(); }
-  };
+  window.rejectRequest = rejectRequest;
 
   /* ====== 페이지 이탈 보호 ====== */
   window.addEventListener('beforeunload', (e) => {
@@ -787,8 +1061,7 @@
   });
 
   /* ====== 시작 ====== */
-  parseURL();
-  loadData();
+  init();
 </script>
 </body>
 </html>
