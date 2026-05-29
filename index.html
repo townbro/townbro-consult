@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>동네Bro 상담 양식</title>
+<meta name="theme-color" content="#4a8262">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html { -webkit-text-size-adjust:100%; }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    background:linear-gradient(180deg,#f7f3ec 0%,#ede4d2 100%);
+    color:#2c2820; line-height:1.55; min-height:100vh;
+  }
+  button { font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+  input, textarea, select { font-family:inherit; }
+
+  .wrap { max-width:680px; margin:0 auto; padding:20px 16px 100px; }
+  .head-card {
+    background:#fff; border-radius:18px; padding:22px 20px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.04);
+    border:1px solid #e8dfd0; margin-bottom:14px;
+  }
+  .brand-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .brand-row .logo {
+    width:44px; height:44px; border-radius:12px;
+    background:linear-gradient(135deg,#4a8262,#3d6e52);
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px; color:#fff; flex-shrink:0;
+  }
+  .brand-row .brand-name { font-size:14px; font-weight:800; color:#4a8262; letter-spacing:-0.3px; }
+  .brand-row .brand-sub { font-size:11px; color:#8d8472; }
+  .greet { font-size:18px; font-weight:800; color:#2c2820; letter-spacing:-0.4px; margin-top:8px; }
+  .greet b { color:#4a8262; }
+  .intro { font-size:13px; color:#6b6450; margin-top:6px; line-height:1.55; }
+  .progress-wrap { margin-top:14px; }
+  .progress-bar { background:#f0eadb; height:8px; border-radius:999px; overflow:hidden; }
+  .progress-fill { background:linear-gradient(90deg,#4a8262,#5a9b75); height:100%; width:0%; transition:width 0.4s; border-radius:999px; }
+  .progress-text { font-size:11px; color:#8d8472; font-weight:700; margin-top:4px; text-align:right; }
+
+  .section {
+    background:#fff; border-radius:14px; padding:0; overflow:hidden;
+    border:1px solid #ece5d6; margin-bottom:12px;
+  }
+  .section-head {
+    background:#faf0e0; padding:12px 16px;
+    display:flex; justify-content:space-between; align-items:center;
+    border-bottom:1px solid #ece5d6;
+  }
+  .section-head .ttl { font-size:14.5px; font-weight:800; color:#2c2820; }
+  .section-head .badge { font-size:10.5px; background:rgba(74,130,98,0.12); color:#4a8262; padding:3px 8px; border-radius:999px; font-weight:700; }
+  .section-body { padding:14px 16px; }
+
+  .fld { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+  .fld:last-child { margin-bottom:0; }
+  .fld .lbl { font-size:12.5px; font-weight:700; color:#5a4f3a; }
+  .fld input, .fld textarea, .fld select {
+    width:100%; border:1.5px solid #e8dfd0; border-radius:10px;
+    padding:11px 13px; font-size:14.5px; background:#fdfaf3;
+  }
+  .fld input:focus, .fld textarea:focus, .fld select:focus {
+    outline:2px solid #4a8262; border-color:transparent; background:#fff;
+  }
+  .fld textarea { min-height:90px; resize:vertical; line-height:1.55; }
+  .fld .helper { font-size:11px; color:#a39c8a; }
+
+  .chip-group {
+    display:flex; flex-wrap:wrap; gap:6px; align-items:center;
+    margin-top:4px;
+  }
+  .chip {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:9px 13px; border:1.5px solid #d8cdb8;
+    border-radius:10px; font-size:13px; font-weight:600;
+    background:#fff; user-select:none; cursor:pointer; color:#5a4f3a;
+    transition:all 0.15s;
+  }
+  .chip:active { transform:scale(0.96); }
+  .chip.on {
+    background:linear-gradient(135deg,#4a8262,#3d6e52);
+    color:#fff; border-color:#4a8262;
+    box-shadow:0 3px 8px rgba(74,130,98,0.18);
+  }
+  .chip input { display:none; }
+  .extra-input {
+    border:1.5px solid #e8dfd0; border-radius:8px;
+    padding:7px 10px; font-size:13px; background:#fdfaf3;
+    max-width:160px;
+  }
+  .extra-input:focus { outline:2px solid #4a8262; border-color:transparent; background:#fff; }
+
+  .check-row { margin-bottom:14px; }
+  .check-row:last-child { margin-bottom:0; }
+  .check-row .lbl { font-size:13.5px; font-weight:800; color:#2c2820; margin-bottom:6px; }
+
+  .room-row {
+    background:#fdfaf3; border-radius:10px; padding:12px;
+    margin-bottom:10px; border:1px solid #f0eadb;
+  }
+  .room-row:last-child { margin-bottom:0; }
+  .room-row .room-name {
+    font-size:13.5px; font-weight:800; color:#4a8262;
+    margin-bottom:8px; display:flex; align-items:center; gap:6px;
+  }
+  .room-row .room-name .pin { font-size:14px; }
+  .room-row textarea {
+    width:100%; border:1.5px solid #e8dfd0; border-radius:8px;
+    padding:9px 11px; font-size:13.5px; background:#fff;
+    min-height:60px; resize:vertical; line-height:1.55;
+  }
+  .room-row textarea:focus { outline:2px solid #4a8262; border-color:transparent; }
+  .room-row .row2 { display:flex; gap:6px; margin-top:6px; }
+  .room-row .row2 textarea { min-height:36px; }
+
+  /* 저장 바 — sticky bottom */
+  .save-bar {
+    position:fixed; bottom:0; left:0; right:0;
+    background:rgba(255,255,255,0.96);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-top:1px solid #e8dfd0;
+    padding:12px 16px; padding-bottom:calc(12px + env(safe-area-inset-bottom));
+    display:flex; gap:8px; align-items:center;
+    z-index:100;
+  }
+  .save-bar .auto-stat { flex:1; font-size:11.5px; color:#6b6450; font-weight:600; }
+  .save-bar .auto-stat.saved { color:#4a8262; }
+  .btn-save {
+    background:linear-gradient(135deg,#4a8262,#3d6e52);
+    color:#fff; padding:13px 22px; border-radius:12px;
+    font-size:14px; font-weight:800;
+    box-shadow:0 4px 12px rgba(74,130,98,0.22);
+    min-width:140px;
+  }
+  .btn-save:disabled { opacity:0.6; }
+  .btn-secondary {
+    background:#f3ede2; color:#6b6450;
+    padding:11px 16px; border-radius:10px;
+    font-size:13px; font-weight:700;
+  }
+
+  /* 로딩 / 에러 화면 */
+  .center-screen {
+    min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; padding:24px;
+    gap:14px; text-align:center;
+  }
+  .spin {
+    width:42px; height:42px;
+    border:3px solid #ece5d6; border-top-color:#4a8262;
+    border-radius:50%; animation:spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .err-emoji { font-size:48px; }
+  .err-title { font-size:18px; font-weight:800; color:#2c2820; }
+  .err-msg { font-size:13.5px; color:#6b6450; max-width:320px; line-height:1.55; }
+
+  /* 완료 화면 */
+  .done-screen {
+    min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:24px; gap:14px; text-align:center;
+    background:linear-gradient(180deg,#f7f3ec 0%,#e8f0ea 100%);
+  }
+  .done-emoji {
+    font-size:72px;
+    animation:bounce 1.2s ease-in-out infinite;
+  }
+  @keyframes bounce {
+    0%,100% { transform:translateY(0); }
+    50% { transform:translateY(-12px); }
+  }
+  .done-title { font-size:22px; font-weight:800; color:#4a8262; }
+  .done-msg { font-size:14px; color:#6b6450; max-width:340px; line-height:1.6; }
+
+  /* 토스트 */
+  .toast {
+    position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
+    background:#2c2820; color:#fff;
+    padding:11px 20px; border-radius:999px;
+    font-size:13px; font-weight:600;
+    z-index:200; opacity:0; pointer-events:none;
+    transition:opacity 0.2s;
+    box-shadow:0 6px 18px rgba(0,0,0,0.15);
+  }
+  .toast.show { opacity:1; }
+  .toast.err { background:#c33; }
+
+  /* 관리자 모드 표시 */
+  .admin-badge {
+    position:fixed; top:10px; right:10px;
+    background:linear-gradient(135deg,#d8a72a,#c8961e);
+    color:#fff; padding:5px 11px; border-radius:999px;
+    font-size:11px; font-weight:800; z-index:50;
+    box-shadow:0 3px 10px rgba(216,167,42,0.25);
+  }
+  .admin-tools {
+    background:#fffbf0; border:1.5px dashed #d8a72a;
+    border-radius:14px; padding:12px 14px; margin-bottom:12px;
+  }
+  .admin-tools .ttl { font-size:13px; font-weight:800; color:#a37c0a; margin-bottom:8px; }
+  .admin-tools button {
+    background:#fff; border:1.5px solid #d8cdb8;
+    border-radius:8px; padding:7px 12px; font-size:12px;
+    font-weight:700; color:#5a4f3a; margin-right:4px; margin-bottom:4px;
+  }
+  .admin-tools button:hover { background:#faf6ee; }
+  .admin-edit-input {
+    border:1px dashed #d8a72a !important; background:#fffbf0 !important;
+    padding:3px 6px; font-size:12.5px; font-weight:700; border-radius:5px;
+    color:#5a4f3a;
+  }
+
+  @media (min-width:600px) {
+    .greet { font-size:22px; }
+    .chip { font-size:13.5px; padding:10px 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loadingScreen" class="center-screen">
+  <div class="spin"></div>
+  <div style="font-size:14px;color:#6b6450;">상담 양식 불러오는 중...</div>
+</div>
+
+<div id="errorScreen" class="center-screen" style="display:none;">
+  <div class="err-emoji">🔒</div>
+  <div class="err-title" id="errTitle">잘못된 링크예요</div>
+  <div class="err-msg" id="errMsg">담당자에게 새 링크를 요청해주세요.</div>
+</div>
+
+<div id="doneScreen" class="done-screen" style="display:none;">
+  <div class="done-emoji">🎉</div>
+  <div class="done-title">제출 완료!</div>
+  <div class="done-msg" id="doneMsg">소중한 의견 감사합니다.<br>담당자가 확인 후 곧 연락드릴게요.</div>
+  <button class="btn-secondary" onclick="goBackToForm()" style="margin-top:14px;">← 다시 수정하기</button>
+</div>
+
+<div id="formApp" class="wrap" style="display:none;">
+  <!-- 동적 -->
+</div>
+
+<div id="saveBar" class="save-bar" style="display:none;">
+  <div class="auto-stat" id="autoStat">자동 저장 대기</div>
+  <button class="btn-save" id="saveBtn" onclick="saveAndDone()">✅ 작성 완료</button>
+</div>
+
+<div id="adminBadge" class="admin-badge" style="display:none;">👑 사장님 모드</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ============================================================
+   * 동네Bro 상담 사이트 v1
+   * URL: /?c=COMPANY_ID&t=CONSULT_ID  (고객용)
+   *      /?c=COMPANY_ID&t=CONSULT_ID&admin=any  (사장님 편집 + 템플릿 수정)
+   *
+   * 같은 Supabase 사용 — state.consultTidies / state._v196Template
+   * 동네Bro 사이트와 자동 sync
+   * ============================================================ */
+
+  const SUPABASE_URL = 'https://pshcyqamfclukkoqigvb.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzaGN5cWFtZmNsdWtrb3FpZ3ZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMDYwODMsImV4cCI6MjA5Mzc4MjA4M30.EvoBS4TjybG_yfMavmhThVzo5BtPvY3HSL1JaesguhY';
+  const REST = SUPABASE_URL + '/rest/v1';
+  function HDR(){ return { 'apikey':SUPABASE_KEY, 'Authorization':'Bearer '+SUPABASE_KEY, 'Content-Type':'application/json', 'Prefer':'return=representation' }; }
+
+  /* 기본 템플릿 (state._v196Template 가 없을 때 fallback) */
+  const DEFAULT_TEMPLATE = {
+    version: 1,
+    sections: [
+      { id:'basic', title:'고객 기본 정보', type:'fields',
+        fields:[
+          {k:'customerName',l:'고객명',t:'text'},
+          {k:'customerPhone',l:'연락처',t:'text'},
+          {k:'addr',l:'주소',t:'text',full:true},
+          {k:'siteName2',l:'현장명',t:'text'},
+          {k:'dong',l:'동 / 호수',t:'text'},
+          {k:'sizeArea',l:'평형 / 면적',t:'text'},
+          {k:'structure',l:'구조',t:'text'},
+          {k:'moveDate',l:'입주예정일',t:'date'},
+          {k:'budget',l:'예산',t:'text'},
+          {k:'consultPath',l:'상담경로',t:'check',full:true, options:['소개','블로그','인스타','youtube','기타'], extras:['소개','기타']},
+          {k:'scope',l:'공사 범위',t:'check', options:['전체','부분'], extras:['부분']},
+          {k:'demoScope',l:'철거 범위',t:'check', options:['전체','부분'], extras:['부분']}
+        ]
+      },
+      { id:'requirements', title:'고객 요구사항 / 원하는 스타일', type:'textarea' },
+      { id:'spaces', title:'공간별 상담 내용', type:'rowtable',
+        cols:['고객요청 / 특이사항','비고'],
+        rows:['현관','거실','주방','안방','방 1','방 2','방 3','공용 욕실','안방 욕실','세탁실','보일러실','다용도실','기타'] },
+      { id:'materials', title:'마감재 / 자재 선정', type:'checkrows',
+        rows:[
+          {k:'floor',l:'바닥',options:['강마루','타일','장판','기타'],extras:['장판','기타']},
+          {k:'wall',l:'벽',options:['도배','페인트','타일','필름','기타'],extras:['기타']},
+          {k:'ceiling',l:'천장',options:['평천장','우물천장','기타'],extras:['기타']},
+          {k:'kitchen',l:'주방',options:['ㄱ자','ㄷ자','아일랜드','기타'],extras:['기타']},
+          {k:'sink',l:'싱크대',options:['상부장','하부장','키큰장','홈바','기타'],extras:['기타']},
+          {k:'pubBath',l:'공용욕실',options:['조적파티션(Full/Half)','건식','기타'],extras:['기타']},
+          {k:'mainBath',l:'안방욕실',options:['조적파티션(Full/Half)','건식','기타'],extras:['기타']}
+        ]
+      },
+      { id:'requestNote', title:'요청 사항', type:'textarea' },
+      { id:'result', title:'상담 결과', type:'check',
+        options:['1차상담','2차상담','실측예정','견적 진행','계약','보류','기타'], extras:['기타'] },
+      { id:'quoteNote', title:'견적 참고 사항', type:'textarea' }
+    ]
+  };
+  /* 고객 모드에선 상담 결과/견적 참고 같은 내부용 섹션은 자동 제외 */
+  const CUSTOMER_HIDE = ['result','quoteNote'];
+
+  /* ====== state ====== */
+  let companyId = null;
+  let consultId = null;
+  let isAdmin = false;
+  let appState = null;
+  let consult = null;
+  let template = null;
+  let companySetup = null;
+  let saveTimer = null;
+  let dirty = false;
+
+  function $(id){ return document.getElementById(id); }
+  function show(id){ $(id).style.display = ''; }
+  function hide(id){ $(id).style.display = 'none'; }
+  function escH(x){ return (x==null?'':String(x)).replace(/[<>&"]/g, c => ({"<":"&lt;",">":"&gt;","&":"&amp;","\"":"&quot;"})[c]); }
+  function sanitizeKey(s){ return String(s).replace(/[^a-zA-Z0-9가-힣]/g,'_'); }
+  function _getP(o, p){ if(!o) return undefined; const ps = p.split('.'); let c = o; for(let i=0;i<ps.length;i++){ if(c==null) return undefined; c = c[ps[i]]; } return c; }
+  function _setP(o, p, v){ const ps = p.split('.'); let c = o; for(let i=0;i<ps.length-1;i++){ const k=ps[i]; if(!c[k] || typeof c[k] !== 'object') c[k]={}; c = c[k]; } c[ps[ps.length-1]] = v; }
+  function showToast(msg, err){
+    const t = $('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (err?' err':'');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  /* ====== URL 파라미터 ====== */
+  function parseURL(){
+    const u = new URL(location.href);
+    companyId = u.searchParams.get('c') || u.searchParams.get('company');
+    consultId = u.searchParams.get('t') || u.searchParams.get('cid');
+    isAdmin = !!(u.searchParams.get('admin') || u.searchParams.get('a'));
+  }
+
+  /* ====== 데이터 ====== */
+  async function loadData(){
+    if(!companyId){
+      showError('🔒','회사 정보가 없는 링크예요', '담당자에게 정확한 링크를 받아주세요.');
+      return;
+    }
+    try{
+      const r = await fetch(REST + '/app_state?id=eq.' + encodeURIComponent(companyId) + '&select=state', { headers: HDR() });
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      const rows = await r.json();
+      if(!rows || !rows[0]){
+        showError('🔒','회사를 찾을 수 없어요', '링크가 올바른지 확인해주세요.');
+        return;
+      }
+      appState = rows[0].state || {};
+      companySetup = appState.companySetup || {};
+
+      /* 템플릿 */
+      template = (appState._v196Template && Array.isArray(appState._v196Template.sections) && appState._v196Template.sections.length)
+        ? appState._v196Template
+        : JSON.parse(JSON.stringify(DEFAULT_TEMPLATE));
+
+      /* 상담 데이터 */
+      if(!consultId){
+        showError('🔒','상담 정보가 없는 링크예요','담당자에게 정확한 링크를 받아주세요.');
+        return;
+      }
+      consult = (appState.consultTidies || []).find(c => c && c.id === consultId && !c._deleted);
+      if(!consult){
+        /* 사장님 모드면 새로 생성 가능 */
+        if(isAdmin){
+          consult = { id: consultId, checklist: {}, createdAt: Date.now(), updatedAt: Date.now() };
+        } else {
+          showError('🔒','상담을 찾을 수 없어요','담당자에게 새 링크를 요청해주세요.');
+          return;
+        }
+      }
+      if(!consult.checklist) consult.checklist = {};
+
+      hide('loadingScreen');
+      show('formApp');
+      $('saveBar').style.display = '';
+      if(isAdmin){ $('adminBadge').style.display = ''; }
+      render();
+    }catch(e){
+      console.error(e);
+      showError('⚠️','불러오기 실패', '인터넷 연결을 확인하고 다시 시도해주세요.\n' + (e.message||e));
+    }
+  }
+  function showError(emoji, title, msg){
+    hide('loadingScreen'); hide('formApp');
+    document.querySelector('#errorScreen .err-emoji').textContent = emoji;
+    $('errTitle').textContent = title;
+    $('errMsg').textContent = msg;
+    show('errorScreen');
+  }
+
+  /* ====== 저장 ====== */
+  async function pushToCloud(){
+    if(!companyId || !consult) return false;
+    try{
+      /* 최신 state 가져와 머지 (다른 직원과 충돌 방지) */
+      const r = await fetch(REST + '/app_state?id=eq.' + encodeURIComponent(companyId) + '&select=state', { headers: HDR() });
+      const rows = await r.json();
+      const latest = (rows && rows[0] && rows[0].state) || appState || {};
+      if(!Array.isArray(latest.consultTidies)) latest.consultTidies = [];
+      const idx = latest.consultTidies.findIndex(c => c && c.id === consult.id);
+      consult.updatedAt = Date.now();
+      if(idx >= 0) latest.consultTidies[idx] = JSON.parse(JSON.stringify(consult));
+      else latest.consultTidies.push(JSON.parse(JSON.stringify(consult)));
+
+      /* 사장님 모드에선 템플릿도 동시에 push */
+      if(isAdmin && template){
+        latest._v196Template = template;
+      }
+
+      const pr = await fetch(REST + '/app_state?id=eq.' + encodeURIComponent(companyId), {
+        method:'PATCH',
+        headers: Object.assign({}, HDR(), { 'Prefer':'return=minimal' }),
+        body: JSON.stringify({ state: latest, updated_at: new Date().toISOString() })
+      });
+      if(!pr.ok) throw new Error('HTTP ' + pr.status);
+      appState = latest;
+      dirty = false;
+      $('autoStat').textContent = '✓ 저장됨';
+      $('autoStat').classList.add('saved');
+      return true;
+    }catch(e){
+      console.error('push err', e);
+      $('autoStat').textContent = '⚠️ 저장 실패 — 다시 시도 중';
+      $('autoStat').classList.remove('saved');
+      return false;
+    }
+  }
+  function scheduleSave(){
+    dirty = true;
+    $('autoStat').textContent = '자동 저장 중...';
+    $('autoStat').classList.remove('saved');
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(pushToCloud, 1200);
+  }
+
+  /* ====== 렌더 ====== */
+  function render(){
+    const app = $('formApp');
+    const data = consult.checklist;
+    const visibleSections = template.sections.filter(s => isAdmin || CUSTOMER_HIDE.indexOf(s.id) === -1);
+
+    const b = (data.basic || {});
+    const customerName = b.customerName || consult.customerName || '고객';
+    const greetingName = customerName + (customerName.endsWith('님') ? '' : '님');
+
+    const companyName = companySetup.company_name || '동네Bro';
+    const logoLetter = companyName.charAt(0);
+
+    let html = '';
+
+    /* 헤더 */
+    html += '<div class="head-card">';
+    html += '<div class="brand-row"><div class="logo">' + escH(logoLetter) + '</div>';
+    html += '<div><div class="brand-name">' + escH(companyName) + '</div><div class="brand-sub">인테리어 상담 양식</div></div></div>';
+    html += '<div class="greet">안녕하세요 <b>' + escH(greetingName) + '</b>!</div>';
+    html += '<div class="intro">우리 집 이야기를 함께 정리해봐요.<br>편하게 떠오르는 대로 적어주시면, 사장님이 최적의 인테리어를 제안해드릴게요. ✨</div>';
+    html += '<div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>';
+    html += '<div class="progress-text" id="progText">0% 작성됨</div></div>';
+    html += '</div>';
+
+    /* 관리자 도구 */
+    if(isAdmin){
+      html += '<div class="admin-tools">';
+      html += '<div class="ttl">👑 사장님 도구</div>';
+      html += '<button onclick="window.adminSaveTpl()">💾 템플릿 저장</button>';
+      html += '<button onclick="window.adminCopyLink()">🔗 고객 링크 복사</button>';
+      html += '<button onclick="window.adminToggleEdit()">' + (window._editTpl?'✓ 양식 편집 끝':'✏️ 양식 편집') + '</button>';
+      html += '<button onclick="window.adminResetTpl()">🔄 기본 양식 복원</button>';
+      html += '</div>';
+    }
+
+    /* 섹션들 */
+    visibleSections.forEach(sec => {
+      html += renderSection(sec, data);
+    });
+
+    app.innerHTML = html;
+    updateProgress();
+  }
+
+  function renderSection(sec, data){
+    let body = '';
+    if(sec.type === 'fields'){
+      body = sec.fields.map(f => {
+        if(f.t === 'check') return renderFieldCheck(sec, f, data);
+        return renderFieldInput(sec, f, data);
+      }).join('');
+    } else if(sec.type === 'textarea'){
+      const v = _getP(data, sec.id) || '';
+      body = '<div class="fld">'
+        + '<textarea data-key="' + sec.id + '" oninput="onInput(this)" placeholder="자유롭게 적어주세요 ✨">' + escH(v) + '</textarea>'
+        + '</div>';
+    } else if(sec.type === 'check'){
+      body = renderCheckChips(sec, sec, data);
+    } else if(sec.type === 'rowtable'){
+      body = sec.rows.map((r, idx) => renderRoomRow(sec, r, idx, data)).join('');
+    } else if(sec.type === 'checkrows'){
+      body = sec.rows.map(r => renderCheckRow(sec, r, data)).join('');
+    }
+    let editBtn = '';
+    if(isAdmin && window._editTpl){
+      editBtn = ' <button onclick="window.adminRenameSection(\'' + sec.id + '\')" style="font-size:10px;padding:3px 7px;background:#fffbf0;border:1px dashed #d8a72a;border-radius:5px;color:#a37c0a;font-weight:700;margin-left:6px;">제목 수정</button>';
+    }
+    return '<div class="section"><div class="section-head"><div class="ttl">' + escH(sec.title) + editBtn + '</div></div><div class="section-body">' + body + '</div></div>';
+  }
+
+  function renderFieldInput(sec, f, data){
+    const path = sec.id + '.' + f.k;
+    const v = _getP(data, path) || '';
+    return '<div class="fld">'
+      + '<div class="lbl">' + escH(f.l) + '</div>'
+      + '<input type="' + (f.t||'text') + '" data-key="' + path + '" value="' + escH(v) + '" oninput="onInput(this)" placeholder="' + escH(f.l) + ' 입력">'
+      + '</div>';
+  }
+
+  function renderFieldCheck(sec, f, data){
+    const base = sec.id + '.' + f.k;
+    let chips = (f.options||[]).map((opt, idx) => {
+      const key = base + '.opts.' + sanitizeKey(opt);
+      const on = !!_getP(data, key);
+      let label = renderEditableLabel(opt, () => 'window.adminRenameFOpt(\'' + sec.id + '\',\'' + f.k + '\',' + idx + ',this.value)');
+      let chip = '<label class="chip' + (on?' on':'') + '">'
+        + '<input type="checkbox" data-key="' + key + '"' + (on?' checked':'') + ' onchange="onCheck(this)">'
+        + label + '</label>';
+      if((f.extras||[]).indexOf(opt) !== -1){
+        const ex = _getP(data, base + '.extra.' + sanitizeKey(opt)) || '';
+        chip += '<input class="extra-input" placeholder="상세" data-key="' + base + '.extra.' + sanitizeKey(opt) + '" value="' + escH(ex) + '" oninput="onInput(this)">';
+      }
+      return chip;
+    }).join(' ');
+    if(isAdmin && window._editTpl){
+      chips += ' <button onclick="window.adminAddFOpt(\'' + sec.id + '\',\'' + f.k + '\')" style="font-size:11px;padding:5px 9px;background:#fffbf0;border:1px dashed #d8a72a;border-radius:6px;color:#a37c0a;font-weight:700;">+ 옵션</button>';
+    }
+    return '<div class="fld">'
+      + '<div class="lbl">' + escH(f.l) + '</div>'
+      + '<div class="chip-group">' + chips + '</div>'
+      + '</div>';
+  }
+
+  function renderCheckChips(sec, holder, data){
+    let chips = (holder.options||[]).map((opt, idx) => {
+      const key = sec.id + '.opts.' + sanitizeKey(opt);
+      const on = !!_getP(data, key);
+      let label = renderEditableLabel(opt, () => 'window.adminRenameSecOpt(\'' + sec.id + '\',' + idx + ',this.value)');
+      let chip = '<label class="chip' + (on?' on':'') + '">'
+        + '<input type="checkbox" data-key="' + key + '"' + (on?' checked':'') + ' onchange="onCheck(this)">'
+        + label + '</label>';
+      if((holder.extras||[]).indexOf(opt) !== -1){
+        const ex = _getP(data, sec.id + '.extra.' + sanitizeKey(opt)) || '';
+        chip += '<input class="extra-input" placeholder="상세" data-key="' + sec.id + '.extra.' + sanitizeKey(opt) + '" value="' + escH(ex) + '" oninput="onInput(this)">';
+      }
+      return chip;
+    }).join(' ');
+    if(isAdmin && window._editTpl){
+      chips += ' <button onclick="window.adminAddSecOpt(\'' + sec.id + '\')" style="font-size:11px;padding:5px 9px;background:#fffbf0;border:1px dashed #d8a72a;border-radius:6px;color:#a37c0a;font-weight:700;">+ 옵션</button>';
+    }
+    return '<div class="chip-group">' + chips + '</div>';
+  }
+
+  function renderCheckRow(sec, r, data){
+    let chips = (r.options||[]).map((opt, idx) => {
+      const key = sec.id + '.' + r.k + '.opts.' + sanitizeKey(opt);
+      const on = !!_getP(data, key);
+      let label = renderEditableLabel(opt, () => 'window.adminRenameCrOpt(\'' + sec.id + '\',\'' + r.k + '\',' + idx + ',this.value)');
+      let chip = '<label class="chip' + (on?' on':'') + '">'
+        + '<input type="checkbox" data-key="' + key + '"' + (on?' checked':'') + ' onchange="onCheck(this)">'
+        + label + '</label>';
+      if((r.extras||[]).indexOf(opt) !== -1){
+        const ex = _getP(data, sec.id + '.' + r.k + '.extra.' + sanitizeKey(opt)) || '';
+        chip += '<input class="extra-input" placeholder="상세" data-key="' + sec.id + '.' + r.k + '.extra.' + sanitizeKey(opt) + '" value="' + escH(ex) + '" oninput="onInput(this)">';
+      }
+      return chip;
+    }).join(' ');
+    if(isAdmin && window._editTpl){
+      chips += ' <button onclick="window.adminAddCrOpt(\'' + sec.id + '\',\'' + r.k + '\')" style="font-size:11px;padding:5px 9px;background:#fffbf0;border:1px dashed #d8a72a;border-radius:6px;color:#a37c0a;font-weight:700;">+ 옵션</button>';
+    }
+    return '<div class="check-row">'
+      + '<div class="lbl">' + escH(r.l) + '</div>'
+      + '<div class="chip-group">' + chips + '</div>'
+      + '</div>';
+  }
+
+  function renderRoomRow(sec, r, idx, data){
+    const cells = sec.cols.map((c, ci) => {
+      const path = sec.id + '.' + sanitizeKey(r) + '.c' + ci;
+      const v = _getP(data, path) || '';
+      const placeholder = ci === 0 ? (r + ' 관련 의견') : '비고 (선택)';
+      return '<textarea data-key="' + path + '" oninput="onInput(this)" placeholder="' + escH(placeholder) + '">' + escH(v) + '</textarea>';
+    }).join('');
+    return '<div class="room-row">'
+      + '<div class="room-name"><span class="pin">📌</span><span>' + escH(r) + '</span></div>'
+      + cells
+      + '</div>';
+  }
+
+  function renderEditableLabel(opt, onblurFnFactory){
+    if(isAdmin && window._editTpl){
+      return '<input class="admin-edit-input" value="' + escH(opt) + '" onclick="event.preventDefault();event.stopPropagation();" onblur="' + onblurFnFactory() + '" style="margin-right:4px;width:80px;">';
+    }
+    return '<span>' + escH(opt) + '</span>';
+  }
+
+  /* ====== 입력 핸들러 ====== */
+  function onInput(el){
+    const path = el.getAttribute('data-key');
+    if(!path) return;
+    _setP(consult.checklist, path, el.value);
+    consult.updatedAt = Date.now();
+    scheduleSave();
+    updateProgress();
+  }
+  function onCheck(el){
+    const path = el.getAttribute('data-key');
+    if(!path) return;
+    _setP(consult.checklist, path, el.checked);
+    consult.updatedAt = Date.now();
+    const chip = el.closest('.chip');
+    if(chip) chip.classList.toggle('on', el.checked);
+    scheduleSave();
+    updateProgress();
+  }
+  window.onInput = onInput;
+  window.onCheck = onCheck;
+
+  function updateProgress(){
+    if(!template || !consult) return;
+    let total = 0, filled = 0;
+    const data = consult.checklist;
+    const visibleSections = template.sections.filter(s => isAdmin || CUSTOMER_HIDE.indexOf(s.id) === -1);
+    visibleSections.forEach(sec => {
+      if(sec.type === 'fields'){
+        sec.fields.forEach(f => {
+          total++;
+          if(f.t === 'check'){
+            const any = (f.options||[]).some(o => _getP(data, sec.id+'.'+f.k+'.opts.'+sanitizeKey(o)));
+            if(any) filled++;
+          } else {
+            if(_getP(data, sec.id+'.'+f.k)) filled++;
+          }
+        });
+      } else if(sec.type === 'textarea'){
+        total++;
+        if(_getP(data, sec.id)) filled++;
+      } else if(sec.type === 'check'){
+        total++;
+        const any = (sec.options||[]).some(o => _getP(data, sec.id+'.opts.'+sanitizeKey(o)));
+        if(any) filled++;
+      } else if(sec.type === 'rowtable'){
+        sec.rows.forEach(r => {
+          total++;
+          const any = sec.cols.some((c, ci) => _getP(data, sec.id+'.'+sanitizeKey(r)+'.c'+ci));
+          if(any) filled++;
+        });
+      } else if(sec.type === 'checkrows'){
+        sec.rows.forEach(r => {
+          total++;
+          const any = (r.options||[]).some(o => _getP(data, sec.id+'.'+r.k+'.opts.'+sanitizeKey(o)));
+          if(any) filled++;
+        });
+      }
+    });
+    const pct = total > 0 ? Math.round(filled/total*100) : 0;
+    const f = $('progFill'); if(f) f.style.width = pct + '%';
+    const t = $('progText'); if(t) t.textContent = pct + '% 작성됨';
+  }
+
+  /* ====== 저장 + 완료 ====== */
+  async function saveAndDone(){
+    if(!consult) return;
+    $('saveBtn').disabled = true;
+    $('saveBtn').textContent = '저장 중...';
+    const ok = await pushToCloud();
+    $('saveBtn').disabled = false;
+    $('saveBtn').textContent = '✅ 작성 완료';
+    if(ok){
+      hide('formApp'); hide('saveBar');
+      show('doneScreen');
+    } else {
+      showToast('저장 실패. 다시 시도해주세요.', true);
+    }
+  }
+  window.saveAndDone = saveAndDone;
+  function goBackToForm(){
+    hide('doneScreen');
+    show('formApp');
+    $('saveBar').style.display = '';
+  }
+  window.goBackToForm = goBackToForm;
+
+  /* ====== 관리자 도구 ====== */
+  window._editTpl = false;
+  window.adminToggleEdit = function(){
+    window._editTpl = !window._editTpl;
+    render();
+  };
+  window.adminSaveTpl = async function(){
+    if(!isAdmin) return;
+    showToast('템플릿 저장 중...');
+    const ok = await pushToCloud();
+    if(ok) showToast('✅ 템플릿 저장 완료');
+  };
+  window.adminCopyLink = function(){
+    const url = location.origin + location.pathname + '?c=' + encodeURIComponent(companyId) + '&t=' + encodeURIComponent(consultId);
+    navigator.clipboard.writeText(url).then(() => showToast('🔗 고객 링크 복사됨'));
+  };
+  window.adminResetTpl = function(){
+    if(!confirm('기본 양식으로 복원합니다. 변경 사항이 사라져요.')) return;
+    template = JSON.parse(JSON.stringify(DEFAULT_TEMPLATE));
+    scheduleSave();
+    render();
+  };
+  window.adminRenameSection = function(sid){
+    const sec = template.sections.find(s => s.id === sid);
+    if(!sec) return;
+    const n = prompt('섹션 제목', sec.title);
+    if(n == null) return;
+    sec.title = n.trim() || sec.title;
+    scheduleSave();
+    render();
+  };
+
+  function _renameAnyOpt(secFinder, fieldFinder, idx, newName){
+    if(!newName.trim()) return;
+    const sec = secFinder(); if(!sec) return;
+    const arr = fieldFinder ? fieldFinder(sec) : sec;
+    const oldName = arr.options[idx];
+    const nm = newName.trim();
+    if(oldName === nm) return;
+    arr.options[idx] = nm;
+    if(arr.extras){
+      const ei = arr.extras.indexOf(oldName);
+      if(ei !== -1) arr.extras[ei] = nm;
+    }
+    scheduleSave();
+    render();
+  }
+  window.adminRenameFOpt = function(sid, fk, idx, newName){
+    _renameAnyOpt(
+      () => template.sections.find(s => s.id === sid),
+      sec => sec.fields.find(f => f.k === fk),
+      idx, newName
+    );
+  };
+  window.adminRenameSecOpt = function(sid, idx, newName){
+    _renameAnyOpt(
+      () => template.sections.find(s => s.id === sid),
+      null, idx, newName
+    );
+  };
+  window.adminRenameCrOpt = function(sid, rk, idx, newName){
+    _renameAnyOpt(
+      () => template.sections.find(s => s.id === sid),
+      sec => sec.rows.find(r => r.k === rk),
+      idx, newName
+    );
+  };
+  window.adminAddFOpt = function(sid, fk){
+    const o = prompt('새 옵션'); if(!o) return;
+    const sec = template.sections.find(s => s.id === sid); if(!sec) return;
+    const f = sec.fields.find(x => x.k === fk); if(f){ f.options = f.options||[]; f.options.push(o.trim()); scheduleSave(); render(); }
+  };
+  window.adminAddSecOpt = function(sid){
+    const o = prompt('새 옵션'); if(!o) return;
+    const sec = template.sections.find(s => s.id === sid); if(sec){ sec.options.push(o.trim()); scheduleSave(); render(); }
+  };
+  window.adminAddCrOpt = function(sid, rk){
+    const o = prompt('새 옵션'); if(!o) return;
+    const sec = template.sections.find(s => s.id === sid); if(!sec) return;
+    const r = sec.rows.find(x => x.k === rk); if(r){ r.options.push(o.trim()); scheduleSave(); render(); }
+  };
+
+  /* ====== 페이지 이탈 보호 ====== */
+  window.addEventListener('beforeunload', (e) => {
+    if(dirty){ e.preventDefault(); e.returnValue = ''; }
+  });
+
+  /* ====== 시작 ====== */
+  parseURL();
+  loadData();
+</script>
+</body>
+</html>
